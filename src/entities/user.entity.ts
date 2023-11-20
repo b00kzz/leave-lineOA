@@ -5,7 +5,10 @@ import {
   BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Userdetail } from './userdetail.entity';
 // import * as bcrypt from 'bcrypt';
 
 @Entity()
@@ -19,12 +22,6 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
   @Column({ default: false })
   isActive: boolean;
 
@@ -36,6 +33,10 @@ export class User {
 
   @Column({ nullable: true })
   updatedBy?: string;
+
+  @OneToOne(() => Userdetail, (userDetail) => userDetail.user) // specify inverse side as a second parameter
+  @JoinColumn()
+  userDetail: Userdetail;
 
   // @BeforeInsert()
   // async hashPasword() {

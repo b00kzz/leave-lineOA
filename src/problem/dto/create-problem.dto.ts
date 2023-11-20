@@ -1,11 +1,11 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateRoleDto {
+export class CreateProblemDto {
   @IsNotEmpty()
-  roleName: string;
+  topic: string;
 
   @IsNotEmpty()
-  roleDesc: string;
+  problem: string;
 
   @IsOptional()
   @IsString()

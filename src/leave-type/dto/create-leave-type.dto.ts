@@ -1,11 +1,14 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateRoleDto {
+export class CreateLeaveTypeDto {
   @IsNotEmpty()
-  roleName: string;
+  ltTopic: string;
 
   @IsNotEmpty()
-  roleDesc: string;
+  ltTime: string;
+
+  @IsNotEmpty()
+  ltTotal: number;
 
   @IsOptional()
   @IsString()

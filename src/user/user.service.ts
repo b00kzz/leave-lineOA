@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from 'src/์entity/user.entity';
+import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -74,5 +74,10 @@ export class UserService {
         massage: `ไม่พบข้อมูลผู้ใช้ ID: ${id}`,
       });
     }
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    console.log(email);
+    return await this.userRepository.findOneBy({ email });
   }
 }

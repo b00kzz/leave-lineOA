@@ -1,11 +1,17 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateRoleDto {
+export class CreateCompanyDto {
   @IsNotEmpty()
-  roleName: string;
+  comopName: string;
 
   @IsNotEmpty()
-  roleDesc: string;
+  bu: string;
+
+  @IsNotEmpty()
+  agency: string;
+
+  @IsNotEmpty()
+  positon: string;
 
   @IsOptional()
   @IsString()
