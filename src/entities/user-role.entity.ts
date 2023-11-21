@@ -2,10 +2,10 @@ import { AbstractEntity } from 'src/database/abstract.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class Role extends AbstractEntity<Role> {
+export class UserRole extends AbstractEntity<UserRole> {
   @Column()
-  name: string;
+  userId: number;
 
   @Column()
-  nameLocal: string;
+  roleId: number;
 }

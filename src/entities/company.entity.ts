@@ -1,3 +1,4 @@
+import { AbstractEntity } from 'src/database/abstract.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,10 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Company {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Company extends AbstractEntity<Company> {
   @Column()
   comopName: string;
 
@@ -22,13 +20,4 @@ export class Company {
 
   @Column()
   positon: string;
-
-  @CreateDateColumn()
-  created: Date;
-
-  @UpdateDateColumn()
-  updated: Date;
-
-  @Column({ nullable: true })
-  updatedBy?: string;
 }

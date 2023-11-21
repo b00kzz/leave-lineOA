@@ -1,3 +1,4 @@
+import { AbstractEntity } from 'src/database/abstract.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,10 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class LeaveType {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class LeaveType extends AbstractEntity<LeaveType> {
   @Column()
   ltTopic: string;
 
@@ -19,13 +17,4 @@ export class LeaveType {
 
   @Column()
   ltTotal: number;
-
-  @CreateDateColumn()
-  created: Date;
-
-  @UpdateDateColumn()
-  updated: Date;
-
-  @Column({ nullable: true })
-  updatedBy?: string;
 }

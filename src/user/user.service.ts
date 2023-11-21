@@ -6,10 +6,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -21,9 +22,11 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<any> {
     const user = await this.userRepository.create(createUserDto);
     const existingUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+      where: { username: createUserDto.username },
     });
+
     // ถ้ามี email Username ซ้ำ, สามารถทำการจัดการข้อผิดพลาดได้ตามที่คุณต้องการ
+    // const { deletedAt, ...newUser } = user;
     if (existingUser) {
       const msg = {
         statusCode: HttpStatus.CONFLICT,
@@ -42,7 +45,9 @@ export class UserService {
   }
 
   async findOne(id: number): Promise<any> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
     if (user) {
       return user;
     } else {
@@ -52,32 +57,42 @@ export class UserService {
       });
     }
   }
-  async update(id: number, createUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (user) {
-      const update = Object.assign(user, createUserDto);
-      return await this.userRepository.save(update);
+      try {
+        const update = Object.assign(user, updateUserDto);
+        return await this.userRepository.save(update);
+      } catch (error) {
+        throw new NotFoundException({ massage: `อีเมล์นี้มีผู้ใช้งานแล้ว` });
+      }
     } else {
-      throw new NotFoundException();
+      throw new NotFoundException({ massage: `User does not exit!!` });
     }
   }
 
-  async remove(id: number): Promise<any> {
+  async removeUser(id: number): Promise<any> {
     const user = await this.userRepository.findOne({ where: { id } });
+
     if (user) {
-      await this.userRepository.remove(user);
+      // ทำการอัพเดตคอลัมน์ deletedAt ของ user
+      await this.userRepository.update(id, { deletedAt: new Date() });
       throw new NotFoundException({
-        massage: `ลบข้อมูลผู้ใช้ ID: ${id} สำเร็จ`,
+        message: `ลบข้อมูลผู้ใช้ ID: ${id} สำเร็จ`,
       });
     } else {
       throw new NotFoundException({
-        massage: `ไม่พบข้อมูลผู้ใช้ ID: ${id}`,
+        message: `ไม่พบข้อมูลผู้ใช้ ID: ${id}`,
       });
     }
   }
 
-  async findByEmail(email: string): Promise<User> {
-    console.log(email);
-    return await this.userRepository.findOneBy({ email });
+  async findOneWithUserName(userName: string) {
+    return await this.userRepository.findOne({ where: { username: userName } });
+  }
+
+  async findByEmail(username: string): Promise<User> {
+    console.log(username);
+    return await this.userRepository.findOneBy({ username });
   }
 }

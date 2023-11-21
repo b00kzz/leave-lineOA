@@ -6,13 +6,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { AbstractEntity } from 'src/database/abstract.entity';
 
 @Entity()
-export class Userdetail {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Userdetail extends AbstractEntity<Userdetail> {
   @Column()
   firstName: string;
 
@@ -24,16 +21,4 @@ export class Userdetail {
 
   @Column({ nullable: true })
   userImage: string;
-
-  @CreateDateColumn()
-  created: Date;
-
-  @UpdateDateColumn()
-  updated: Date;
-
-  @Column({ nullable: true })
-  updatedBy?: string;
-
-  @OneToOne(() => User, (user) => user.userDetail) // กำหนดความสัมพันธ์ OneToOne และระบุคีย์ต่าง ๆ ที่ใช้เชื่อมโยง
-  user: User;
 }

@@ -2,16 +2,21 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { configService } from './config/config.service';
+import { configService } from './database/config.service';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { RolesModule } from './roles/roles.module';
 import { LeaveTypeModule } from './leave-type/leave-type.module';
-import { UserdetailModule } from './userdetail/userdetail.module';
 import { ProblemModule } from './problem/problem.module';
 import { CompanyModule } from './company/company.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { LeaveModule } from './leave/leave.module';
+import { AuthModule } from './auth/auth.module';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
+import { UserRoleModule } from './user-role/user-role.module';
+import { TeamModule } from './team/team.module';
+import { UserTeamModule } from './user_team/user_team.module';
 
 @Module({
   imports: [
@@ -36,12 +41,16 @@ import { LeaveModule } from './leave/leave.module';
     RolesModule,
     LeaveTypeModule,
     LeaveModule,
-    UserdetailModule,
     ProblemModule,
     CompanyModule,
     LeaveModule,
+    AuthModule,
+    UserRoleModule,
+    TeamModule,
+    UserTeamModule,
   ],
-  providers: [],
+  providers: [AppService],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

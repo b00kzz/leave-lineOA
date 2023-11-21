@@ -12,8 +12,8 @@ export class RolesService {
     private readonly RoleRepo: Repository<Role>,
   ) {}
 
-  async create(Role: CreateRoleDto): Promise<Role> {
-    return this.RoleRepo.save(Role);
+  async create(createRole: CreateRoleDto): Promise<Role> {
+    return this.RoleRepo.save(createRole);
   }
 
   async findAll(): Promise<Role[]> {
@@ -45,11 +45,11 @@ export class RolesService {
   async remove(id: number): Promise<any> {
     const detail = await this.RoleRepo.findOne({ where: { id } });
     if (detail) {
-      await this.RoleRepo.remove(detail);
-      return { message: `ลบข้อมูลผู้ใช้ ID: ${id} สำเร็จ` };
+      await this.RoleRepo.update(id, { deletedAt: new Date() });
+      return { message: `ลบ Role ID: ${id} สำเร็จ` };
     } else {
       throw new NotFoundException({
-        message: `ไม่พบข้อมูลผู้ใช้ ID: ${id}`,
+        message: `ไม่พบ Role ID: ${id}`,
       });
     }
   }

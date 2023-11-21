@@ -1,3 +1,4 @@
+import { AbstractEntity } from 'src/database/abstract.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,22 +8,10 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Problem {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Problem extends AbstractEntity<Problem> {
   @Column()
   topic: string;
 
   @Column()
   problem: string;
-
-  @CreateDateColumn()
-  created: Date;
-
-  @UpdateDateColumn()
-  updated: Date;
-
-  @Column({ nullable: true })
-  updatedBy?: string;
 }
