@@ -1,12 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { AbstractEntity } from 'src/database/abstract.entity';
+import { Column, Entity } from 'typeorm';
+import { AbstractEntity } from 'src/entities/abstract.entity/abstract.entity';
 
 @Entity()
 export class Userdetail extends AbstractEntity<Userdetail> {

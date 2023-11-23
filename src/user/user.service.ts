@@ -1,16 +1,12 @@
 // src/services/user.service.ts
-import {
-  ConflictException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { error } from 'console';
+import { UserFilterDto } from './dto/query-user.dto';
+import { skip } from 'node:test';
 
 @Injectable()
 export class UserService {
@@ -40,8 +36,37 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(
+    filter: UserFilterDto,
+  ): Promise<{ data: User[]; error?: Error }> {
+    try {
+      const data = await this.userRepository.find({
+        where: filter.searchText ? filter.SearchText() : filter.Filterlist(),
+        skip: filter.skip,
+        take: filter.take,
+        order: { id: filter.orderBy },
+      });
+      if (!data) {
+        return { data: [] as User[], error: new Error('Data not found') };
+      }
+      return { data: data };
+    } catch (error) {
+      return { data: [] as User[], error: error };
+    }
+  }
+
+  async count(filter: UserFilterDto): Promise<{
+    total: number;
+    error?: Error;
+  }> {
+    try {
+      const total = await this.userRepository.count({
+        where: filter.searchText ? filter.SearchText() : filter.Filterlist(),
+      });
+      return { total: total };
+    } catch (error) {
+      return { total: 0, error: error };
+    }
   }
 
   async findOne(id: number): Promise<any> {
@@ -88,11 +113,20 @@ export class UserService {
   }
 
   async findOneWithUserName(userName: string) {
-    return await this.userRepository.findOne({ where: { username: userName } });
+    const result = await this.userRepository.findOne({
+      where: { username: userName },
+    });
+    try {
+      const status = await this.userRepository.update(result.id, {
+        isActive: true,
+      });
+      return result;
+    } catch (error) {
+      return error;
+    }
   }
 
   async findByEmail(username: string): Promise<User> {
-    console.log(username);
     return await this.userRepository.findOneBy({ username });
   }
 }

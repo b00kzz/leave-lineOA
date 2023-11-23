@@ -3,7 +3,8 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from 'src/entities/team.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, TypeORMError } from 'typeorm';
+import { TeamFilter } from './dto/query-team.dto';
 
 @Injectable()
 export class TeamService {
@@ -16,8 +17,38 @@ export class TeamService {
     return this.teamRepo.save(createTeam);
   }
 
-  async findAll(): Promise<Team[]> {
-    return this.teamRepo.find();
+  async findAll(filter: TeamFilter): Promise<{ data: Team[]; error?: Error }> {
+    try {
+      const data = await this.teamRepo.find({
+        where: filter.searchText ? filter.SearchText() : filter.FilterList(),
+        skip: filter.skip,
+        take: filter.take,
+        order: { id: filter.orderBy },
+      });
+      if (!data) {
+        return { data: [] as Team[], error: new Error('Data not found') };
+      }
+      return { data: data };
+    } catch (e) {
+      const exception = e as TypeORMError;
+      return { data: [] as Team[], error: new Error(exception.message) };
+    }
+  }
+
+  async count(filter: TeamFilter): Promise<{
+    total: number;
+    error?: Error;
+  }> {
+    // const filter: TeamFilter = new TeamFilter();
+    try {
+      const result = await this.teamRepo.count({
+        where: filter.searchText ? filter.SearchText() : filter.FilterList(),
+      });
+
+      return { total: result };
+    } catch (e) {
+      return { total: 0, error: e };
+    }
   }
 
   async findOne(id: number): Promise<any> {

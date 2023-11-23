@@ -4,6 +4,7 @@ import { Role } from 'src/entities/role.entity';
 import { Repository } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { FilterRole } from './dto/query-role.dto';
 
 @Injectable()
 export class RolesService {
@@ -16,8 +17,24 @@ export class RolesService {
     return this.RoleRepo.save(createRole);
   }
 
-  async findAll(): Promise<Role[]> {
-    return this.RoleRepo.find();
+  async findAll(filter: FilterRole): Promise<{ data: Role[]; error?: Error }> {
+    const result = await this.RoleRepo.find({
+      where: filter.searchText ? filter.SearchText() : filter.FilterList(),
+      skip: filter.skip,
+      take: filter.take,
+      order: { id: filter.orderBy },
+    });
+    if (result) {
+      return { data: result };
+    }
+    return { data: [], error: new Error('ไม่พบข้อมูล') };
+  }
+
+  async count(filter: FilterRole): Promise<{ total: number }> {
+    const result = await this.RoleRepo.count({
+      where: filter.searchText ? filter.SearchText() : filter.FilterList(),
+    });
+    return { total: result }; //จำนวนทั้งหมดของข้อมูล�
   }
 
   async findOne(id: number): Promise<any> {

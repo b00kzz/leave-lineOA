@@ -1,15 +1,7 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BeforeInsert,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, BeforeInsert } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { AbstractEntity } from 'src/database/abstract.entity';
+import { AbstractEntity } from 'src/entities/abstract.entity/abstract.entity';
+import { ResultResponse } from 'common/api-spec/type-helper/result-response.helper';
 
 @Entity()
 export class User extends AbstractEntity<User> {
@@ -45,3 +37,5 @@ export class User extends AbstractEntity<User> {
     this.password = await bcrypt.hash(this.password, 10);
   }
 }
+
+export class user extends ResultResponse([User]) {}

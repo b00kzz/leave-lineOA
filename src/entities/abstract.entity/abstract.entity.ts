@@ -1,5 +1,5 @@
+import { ApiNumberProperty } from 'common/api-spec/decorator';
 import {
-  Column,
   CreateDateColumn,
   DeleteDateColumn,
   PrimaryGeneratedColumn,
@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 export class AbstractEntity<T> {
+  @ApiNumberProperty(1)
   @PrimaryGeneratedColumn()
   id: number;
 
