@@ -1,12 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class FilterUserRole {
-  @ApiProperty({ example: 1 })
-  @IsNotEmpty()
-  userId: number;
+  @ApiProperty({ description: 'Choose among ASC, DESC, asc, or desc', example: "ASC" })
+  @IsOptional()
+  orderBy?: any;
 
   @ApiProperty({ example: 1 })
-  @IsNotEmpty()
-  roleId: number;
+  @IsOptional()
+  @IsNumber()
+  searchInt?: number;
+
+  @ApiProperty({ example: 10, description: "Number of data on a page" })
+  @IsNumber()
+  @IsOptional()
+  limit?: number;
+
+  @ApiProperty({ example: 1, description: "Choose page" })
+  @IsNumber()
+  @IsOptional()
+  page?: number;
 }

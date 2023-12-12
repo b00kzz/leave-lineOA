@@ -1,11 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { FindOptionsOrderValue, ILike } from 'typeorm';
 
 export class TeamFilter {
+  @IsNumber()
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  mainTeamId?: number;
+
   @IsString()
   @ApiProperty({ example: 'Delivery' })
-  name: any = '';
+  name?: any = '';
 
   @IsOptional()
   @ApiProperty({ example: '' })
@@ -27,6 +32,9 @@ export class TeamFilter {
   @IsOptional()
   skip?: number; // 0
 
+  @IsOptional()
+  deleteAt?: Date = null
+
   @ApiProperty({
     description: 'Choose among ASC, DESC, asc, or desc',
     example: 'ASC',
@@ -40,10 +48,13 @@ export class TeamFilter {
       output.name = ILike(`%${this.name}%`);
     }
 
+    if (this.mainTeamId !== null) {
+      output.mainTeamId = this.mainTeamId;
+    }
+
     if (this.names?.length > 0) {
       output.names = this.names;
     }
-
     return output;
   }
 

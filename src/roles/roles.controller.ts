@@ -18,7 +18,7 @@ import { FilterRole } from './dto/query-role.dto';
 @ApiTags('roles')
 @Controller('roles')
 export class RolesController {
-  constructor(private readonly rolesService: RolesService) {}
+  constructor(private readonly rolesService: RolesService) { }
   @UseGuards(JwtGuard)
   @Post()
   create(@Body() createRoleDto: CreateRoleDto) {
@@ -26,7 +26,7 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
+  @Patch()
   async findAll(@Body() req: FilterRole) {
     const filter = new FilterRole();
     filter.name = req.name || '';
@@ -35,8 +35,12 @@ export class RolesController {
     filter.take = req.take || 0;
     filter.skip = req.skip || 0;
     filter.searchText = req.searchText || '';
-    const { data, error } = await this.rolesService.findAll(filter);
-    const { total } = await this.rolesService.count(filter);
+    const { data, total } = await this.rolesService.findAll(filter);
+    if (total == 0) {
+      return {
+        message: 'data not found'
+      }
+    }
     return { data, total };
   }
 

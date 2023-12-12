@@ -18,7 +18,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('team')
 @Controller('team')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly teamService: TeamService) { }
   @UseGuards(JwtGuard)
   @Post()
   create(@Body() createTeamDto: CreateTeamDto) {
@@ -26,7 +26,7 @@ export class TeamController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
+  @Patch()
   async findAll(@Body() request: TeamFilter) {
     try {
       const filter = new TeamFilter();
@@ -34,7 +34,6 @@ export class TeamController {
       filter.skip = request.skip || 0;
       filter.name = request.name ?? '';
       filter.orderBy = request.orderBy || 'DESC';
-      // filter.status = request.status || '';
       filter.searchText = request.searchText || '';
       const { data, error } = await this.teamService.findAll(filter);
       if (error) {
@@ -60,5 +59,11 @@ export class TeamController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teamService.remove(+id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('main/:id')
+  findAllMain(@Param('id') id: string) {
+    return this.teamService.findAllById(+id);
   }
 }

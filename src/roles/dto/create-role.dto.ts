@@ -9,4 +9,8 @@ export class CreateRoleDto {
   @ApiProperty({ example: '' })
   @IsNotEmpty()
   nameLocal: string;
+
+  @ApiProperty({ example: '' })
+  @IsNotEmpty()
+  description: string;
 }

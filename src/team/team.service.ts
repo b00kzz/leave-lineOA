@@ -11,7 +11,7 @@ export class TeamService {
   constructor(
     @InjectRepository(Team)
     private readonly teamRepo: Repository<Team>,
-  ) {}
+  ) { }
 
   async create(createTeam: CreateTeamDto): Promise<Team> {
     return this.teamRepo.save(createTeam);
@@ -25,6 +25,7 @@ export class TeamService {
         take: filter.take,
         order: { id: filter.orderBy },
       });
+
       if (!data) {
         return { data: [] as Team[], error: new Error('Data not found') };
       }
@@ -39,7 +40,6 @@ export class TeamService {
     total: number;
     error?: Error;
   }> {
-    // const filter: TeamFilter = new TeamFilter();
     try {
       const result = await this.teamRepo.count({
         where: filter.searchText ? filter.SearchText() : filter.FilterList(),
@@ -52,9 +52,30 @@ export class TeamService {
   }
 
   async findOne(id: number): Promise<any> {
-    const user = await this.teamRepo.findOne({ where: { id } });
-    if (user) {
-      return user;
+    const team = await this.teamRepo.findOne({ where: { id } });
+    if (team) {
+      return team;
+    } else {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `ไม่พบข้อมูลผู้ใช้ ID: ${id}`,
+      });
+    }
+  }
+
+  async findAllById(id: number): Promise<any> {
+    const teammain = await this.teamRepo.findOne({ where: { id } });
+    const team = await this.teamRepo.find({ where: { mainTeamId: id } });
+    if (teammain && team.length !== 0) {
+      return {
+        team: teammain,
+        subTeam: team,
+      };
+    } else if (teammain && team.length === 0) {
+      return {
+        Team: teammain,
+        message: `ไม่พบทีมย่อยของทีม ${teammain.name}`,
+      };
     } else {
       throw new NotFoundException({
         statusCode: HttpStatus.NOT_FOUND,

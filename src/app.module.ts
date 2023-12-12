@@ -7,10 +7,8 @@ import { LoggerMiddleware } from '../common/middleware/logger.middleware';
 import { RolesModule } from './roles/roles.module';
 import { LeaveTypeModule } from './leave-type/leave-type.module';
 import { ProblemModule } from './problem/problem.module';
-import { CompanyModule } from './company/company.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { LeaveModule } from './leave/leave.module';
 import { AuthModule } from './auth/auth.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -18,6 +16,12 @@ import { UserRoleModule } from './user-role/user-role.module';
 import { TeamModule } from './team/team.module';
 import { UserTeamModule } from './user_team/user_team.module';
 import { ApiSpecService } from 'common/api-spec/api-spec.service';
+import { LineMessageModule } from './line-message/line-message.module';
+import { HolidayModule } from './holiday/holiday.module';
+import { UserTimeOffModule } from './user-time-off/user-time-off.module';
+import { LeaveRequestsModule } from './leave-requests/leave-requests.module';
+import { PositionModule } from './position/position.module';
+import { CalendarModule } from './calendar/calendar.module';
 
 @Module({
   imports: [
@@ -41,14 +45,17 @@ import { ApiSpecService } from 'common/api-spec/api-spec.service';
     UserModule,
     RolesModule,
     LeaveTypeModule,
-    LeaveModule,
     ProblemModule,
-    CompanyModule,
-    LeaveModule,
     AuthModule,
     UserRoleModule,
     TeamModule,
     UserTeamModule,
+    LineMessageModule,
+    HolidayModule,
+    UserTimeOffModule,
+    LeaveRequestsModule,
+    PositionModule,
+    CalendarModule,
   ],
   providers: [AppService, ApiSpecService],
   controllers: [AppController],

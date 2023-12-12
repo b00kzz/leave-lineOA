@@ -11,31 +11,28 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private readonly RoleRepo: Repository<Role>,
-  ) {}
+  ) { }
 
   async create(createRole: CreateRoleDto): Promise<Role> {
     return this.RoleRepo.save(createRole);
   }
 
-  async findAll(filter: FilterRole): Promise<{ data: Role[]; error?: Error }> {
+  async findAll(filter: FilterRole): Promise<{ data: Role[], total?: number, error?: Error }> {
     const result = await this.RoleRepo.find({
       where: filter.searchText ? filter.SearchText() : filter.FilterList(),
       skip: filter.skip,
       take: filter.take,
       order: { id: filter.orderBy },
     });
+    const total = await this.RoleRepo.count({
+      where: filter.searchText ? filter.SearchText() : filter.FilterList(),
+    })
     if (result) {
-      return { data: result };
+      return { data: result, total: total };
     }
     return { data: [], error: new Error('ไม่พบข้อมูล') };
   }
 
-  async count(filter: FilterRole): Promise<{ total: number }> {
-    const result = await this.RoleRepo.count({
-      where: filter.searchText ? filter.SearchText() : filter.FilterList(),
-    });
-    return { total: result }; //จำนวนทั้งหมดของข้อมูล�
-  }
 
   async findOne(id: number): Promise<any> {
     const user = await this.RoleRepo.findOne({ where: { id } });

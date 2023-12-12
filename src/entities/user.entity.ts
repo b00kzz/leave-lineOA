@@ -1,10 +1,21 @@
-import { Entity, Column, BeforeInsert } from 'typeorm';
+import { Entity, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AbstractEntity } from 'src/entities/abstract.entity/abstract.entity';
 import { ResultResponse } from 'common/api-spec/type-helper/result-response.helper';
+import { ApiNumberProperty } from 'common/api-spec/decorator';
 
 @Entity()
 export class User extends AbstractEntity<User> {
+  @ApiNumberProperty(1)
+  @PrimaryGeneratedColumn({ name: "user_id" })
+  id: number;
+
+  @Column({ name: "role_id" })
+  roleId: number;
+
+  @Column({ name: "position_id" })
+  positionId: number;
+
   @Column({ unique: true })
   username: string;
 
@@ -29,8 +40,19 @@ export class User extends AbstractEntity<User> {
   @Column()
   lastNameLocal: string;
 
-  @Column({ default: false })
-  isActive: boolean;
+  @Column()
+  phone: string;
+
+  @CreateDateColumn({
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP(6)' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ default: null, nullable: true, })
+  deletedAt?: Date;
 
   @BeforeInsert()
   async hashPasword() {
@@ -38,4 +60,4 @@ export class User extends AbstractEntity<User> {
   }
 }
 
-export class user extends ResultResponse([User]) {}
+export class user extends ResultResponse([User]) { }

@@ -2,15 +2,17 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLeaveTypeDto {
   @IsNotEmpty()
-  ltTopic: string;
+  name: string;
 
   @IsNotEmpty()
-  ltTime: string;
+  nameLocal: string;
 
   @IsNotEmpty()
-  ltTotal: number;
+  description: string;
 
-  @IsOptional()
-  @IsString()
-  updatedBy?: string;
+  @IsNotEmpty()
+  icon: string;
+
+  @IsNotEmpty()
+  colour: string;
 }

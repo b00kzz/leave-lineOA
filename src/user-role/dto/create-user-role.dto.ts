@@ -9,4 +9,5 @@ export class CreateUserRoleDto {
   @ApiProperty({ example: 1 })
   @IsNotEmpty()
   roleId: number;
+
 }

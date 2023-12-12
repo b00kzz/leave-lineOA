@@ -1,10 +1,15 @@
+import { ApiNumberProperty } from 'common/api-spec/decorator';
 import { TEAM_STATUS } from 'common/enumeration/team.enum';
 import { AbstractEntity } from 'src/entities/abstract.entity/abstract.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Team extends AbstractEntity<Team> {
-  @Column({ default: 0 })
+  @ApiNumberProperty(1)
+  @PrimaryGeneratedColumn({ name: "team_id" })
+  id: number;
+
+  @Column({ default: 0, name: "main_team_id" })
   mainTeamId: number;
 
   @Column({ length: 255 })
@@ -22,4 +27,15 @@ export class Team extends AbstractEntity<Team> {
     default: TEAM_STATUS.ACTIVE,
   })
   status: string; //inactive || active
+
+  @CreateDateColumn({
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP(6)' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ default: null, nullable: true, })
+  deletedAt?: Date;
 }

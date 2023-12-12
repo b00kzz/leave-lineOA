@@ -16,7 +16,6 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
     LocalStrategy,
     JwtStrategy,
     RefreshJwtStrategy,
-    UserService,
   ],
   controllers: [AuthController],
   imports: [
@@ -27,4 +26,4 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
     }),
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

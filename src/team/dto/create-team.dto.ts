@@ -19,7 +19,7 @@ export class CreateTeamDto {
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ example: '' })
+  @ApiProperty({ example: 'active' })
   @IsNotEmpty()
   status: string; //inactive || active
 }

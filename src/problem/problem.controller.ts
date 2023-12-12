@@ -13,11 +13,12 @@ import { CreateProblemDto } from './dto/create-problem.dto';
 import { UpdateProblemDto } from './dto/update-problem.dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { FilterProblem } from './dto/query-problem.dto';
 
 @ApiTags('problem')
 @Controller('problem')
 export class ProblemController {
-  constructor(private readonly problemService: ProblemService) {}
+  constructor(private readonly problemService: ProblemService) { }
 
   @UseGuards(JwtGuard)
   @Post()
@@ -26,9 +27,14 @@ export class ProblemController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
-  findAll() {
-    return this.problemService.findAll();
+  @Patch()
+  async findAll(@Body() filter: FilterProblem): Promise<any> {
+    try {
+      const result = await this.problemService.findAll(filter);
+      return { success: true, data: result.data, total: result.total };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   }
 
   @UseGuards(JwtGuard)

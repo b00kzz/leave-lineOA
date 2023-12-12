@@ -1,23 +1,44 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserTeamDto } from './dto/create-user_team.dto';
-import { UpdateUserTeamDto } from './dto/update-user_team.dto';
-import { UserTeam } from 'src/entities/user_team.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { UserTeam } from "src/entities/user_team.entity";
+import { Repository } from "typeorm";
+import { CreateUserTeamDto } from "./dto/create-user_team.dto";
+import { FilterUserTeam } from "./dto/query-user_team.dto";
+import { UpdateUserTeamDto } from "./dto/update-user_team.dto";
 
 @Injectable()
 export class UserTeamService {
   constructor(
     @InjectRepository(UserTeam)
     private readonly userTeamRepo: Repository<UserTeam>,
-  ) {}
+  ) { }
 
   async create(createRole: CreateUserTeamDto): Promise<UserTeam> {
     return this.userTeamRepo.save(createRole);
   }
 
-  async findAll(): Promise<UserTeam[]> {
-    return this.userTeamRepo.find();
+  async findAll(query: FilterUserTeam): Promise<any> {
+    if (!query || !query.page || !query.limit || !query.orderBy) {
+      throw new BadRequestException('Invalid query parameters');
+    }
+    const { page, limit, orderBy, searchText } = query;
+    const offset = (page - 1) * limit;
+    const order = { id: orderBy ? orderBy : 'DESC' }
+    const queryBuilder = this.userTeamRepo.createQueryBuilder('user_team');
+    if (searchText) {
+      queryBuilder.where('user_team.userId = :searchText', { searchText: searchText })
+    }
+    if (offset) {
+      //เลขหน้า
+      queryBuilder.skip(offset);
+    }
+    if (limit) {
+      //จำนวนข้อมูลที่แสดง
+      queryBuilder.take(limit);
+    }
+    queryBuilder.orderBy(order);
+    const [data, total] = await queryBuilder.getManyAndCount();
+    return { data, total };
   }
 
   async findOne(id: number): Promise<any> {

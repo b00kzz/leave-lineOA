@@ -6,14 +6,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from 'src/entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserFilterDto } from './dto/query-user.dto';
-import { skip } from 'node:test';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<any> {
     const user = await this.userRepository.create(createUserDto);
@@ -116,14 +115,7 @@ export class UserService {
     const result = await this.userRepository.findOne({
       where: { username: userName },
     });
-    try {
-      const status = await this.userRepository.update(result.id, {
-        isActive: true,
-      });
-      return result;
-    } catch (error) {
-      return error;
-    }
+    return result;
   }
 
   async findByEmail(username: string): Promise<User> {

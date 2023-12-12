@@ -20,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   // @UseGuards(JwtGuard)
   @Post()
@@ -29,7 +29,7 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
+  @Patch()
   async findAll(@Body() request: UserFilterDto) {
     try {
       const filter = new UserFilterDto();

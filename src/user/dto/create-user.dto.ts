@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsPhoneNumber,
   IsString,
   Matches,
 } from 'class-validator';
@@ -11,6 +13,12 @@ export class CreateUserDto {
   @ApiProperty({ example: '123@example.com' })
   @IsEmail()
   username: string;
+
+  @IsNumber()
+  roleId: number;
+
+  @IsNumber()
+  positionId: number;
 
   // @Matches(/^(?=.*[a-z])(?=.*[A-Z\d!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/, {
   //   message:
@@ -43,6 +51,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({ example: '' })
   lastNameLocal: string;
+
+  @IsString()
+  phone: string;
 
   // @IsOptional()
   // isActive?: boolean;

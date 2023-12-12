@@ -1,15 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
-import { configService } from '../common/configs/config.service';
+import cookieParser from 'cookie-parser';
 import { ApiSpecService } from 'common/api-spec/api-spec.service';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.enableCors();
-  // const port = configService.getPort() || 3000;
+  app.enableCors();
   const configService = app.get(ConfigService);
   const port = configService.get('PORT') || 3000;
   app.setGlobalPrefix('api');

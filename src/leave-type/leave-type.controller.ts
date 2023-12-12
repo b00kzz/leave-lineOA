@@ -13,11 +13,12 @@ import { CreateLeaveTypeDto } from './dto/create-leave-type.dto';
 import { UpdateLeaveTypeDto } from './dto/update-leave-type.dto';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { FilterLeaveTypeDto } from './dto/query-leave-type.dto';
 
 @ApiTags('leave-type')
 @Controller('leave-type')
 export class LeaveTypeController {
-  constructor(private readonly leaveTypeService: LeaveTypeService) {}
+  constructor(private readonly leaveTypeService: LeaveTypeService) { }
 
   @UseGuards(JwtGuard)
   @Post()
@@ -26,9 +27,27 @@ export class LeaveTypeController {
   }
 
   @UseGuards(JwtGuard)
-  @Get()
-  findAll() {
-    return this.leaveTypeService.findAll();
+  @Patch()
+  async findAll(@Body() req: FilterLeaveTypeDto) {
+    try {
+      const filter = new FilterLeaveTypeDto
+      filter.take = req.take || 0;
+      filter.skip = req.skip || 0;
+      filter.orderBy = req.orderBy || "DESC";
+      filter.searchText = req.searchText || '';
+      filter.code = req.code ?? '';
+      filter.name = req.name ?? '';
+      filter.nameLocal = req.nameLocal ?? '';
+      const { data, error } = await this.leaveTypeService.findAll(filter)
+      if (error) {
+        throw new Error(error.message)
+      }
+      const count = await this.leaveTypeService.count(filter)
+      return { data, total: count.total }
+    } catch (error) {
+      return error
+    }
+
   }
 
   @UseGuards(JwtGuard)
