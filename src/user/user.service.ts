@@ -45,9 +45,12 @@ export class UserService {
         take: filter.take,
         order: { id: filter.orderBy },
       });
+      //destructor deletedAt
+
       if (!data) {
         return { data: [] as User[], error: new Error('Data not found') };
       }
+
       return { data: data };
     } catch (error) {
       return { data: [] as User[], error: error };
@@ -115,10 +118,13 @@ export class UserService {
     const result = await this.userRepository.findOne({
       where: { username: userName },
     });
-    return result;
+    const { deletedAt, ...newCust } = result;
+    return newCust;
   }
 
-  async findByEmail(username: string): Promise<User> {
-    return await this.userRepository.findOneBy({ username });
+  async findByEmail(username: string): Promise<any> {
+    const user = await this.userRepository.findOneBy({ username });
+    const { password, deletedAt, ...newCust } = user;
+    return newCust; // คืนค่าผู้ใช้งาน
   }
 }

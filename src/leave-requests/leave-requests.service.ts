@@ -4,13 +4,15 @@ import { UpdateLeaveRequestDto } from './dto/update-leave-request.dto';
 import { LeaveRequest } from 'src/entities/leave-request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FilterLeaveReq } from './dto/query-leave-req.dto';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { WorkFlowCardService } from 'src/work-flow-card/work-flow-card.service';
 
 @Injectable()
 export class LeaveRequestsService {
   constructor(
     @InjectRepository(LeaveRequest)
     private readonly leaveReqRepository: Repository<LeaveRequest>,
+    private readonly workFlowCardSvc: WorkFlowCardService,
   ) { }
 
   async create(create: CreateLeaveRequestDto): Promise<any> {
@@ -23,7 +25,14 @@ export class LeaveRequestsService {
     const seconds = new Date().getSeconds().toString().padStart(2, '0');
     const code = `${year}${month}${day}${hours}${minutes}${seconds}${randomCode}`;
     const newCreate = { ...create, code: code }
-    return await this.leaveReqRepository.save(newCreate);
+    const leavReq = await this.leaveReqRepository.save(newCreate);
+    await this.workFlowCardSvc.create({
+      leaveId: leavReq.id,
+      work_flow_type: "Request",
+      work_flow_code: "WF-01",
+      userId: 5
+    })
+    return leavReq
   }
 
   async findAll(query: FilterLeaveReq): Promise<any> {
@@ -89,10 +98,12 @@ export class LeaveRequestsService {
       await this.leaveReqRepository.update(id, { deletedAt: new Date() });
       throw new NotFoundException({
         message: `ลบข้อมูล ID: ${id} สำเร็จ`,
+        statusCode: HttpStatus.OK,
       });
     } else {
       throw new NotFoundException({
         message: `ไม่พบข้อมูล ID: ${id}`,
+        statusCode: HttpStatus.NOT_FOUND,
       });
     }
   }

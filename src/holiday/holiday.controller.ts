@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { HolidayService } from './holiday.service';
 import { CreateHolidayDto } from './dto/create-holiday.dto';
 import { UpdateHolidayDto } from './dto/update-holiday.dto';
-import { FilterHoliday } from './dto/query-holiday.dto';
+import { FilterDay, FilterHoliday } from './dto/query-holiday.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { LeaveDateDto } from 'src/calendar/dto/leave-date.dto';
 import { CalendarService } from 'src/calendar/calendar.service';
@@ -21,6 +21,11 @@ export class HolidayController {
   createMany() {
     const holiday = this.holidayService.createManyHolidays();
     return holiday
+  }
+
+  @Patch('duration')
+  async getDateDuration(@Body() filterDay: FilterDay) {
+    return await this.holidayService.findByStartEnd(filterDay)
   }
 
   @Patch()

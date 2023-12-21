@@ -29,11 +29,13 @@ export class CreateLeaveRequestDto {
 
     @ApiProperty({ type: "string", example: "2023-01-21" })
     @IsDateString()
+    @IsOptional()
     endTime?: Date;
 
     @ApiProperty({ type: "string", example: "morning" || "afternoon" || "full day" })
     @IsNotEmpty()
     @IsString()
+    @IsOptional()
     endLeaveDayType?: string;
 
     @ApiProperty({ type: "number", example: 1 })

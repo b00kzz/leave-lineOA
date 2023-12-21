@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHolidayDto } from './dto/create-holiday.dto';
 import { UpdateHolidayDto } from './dto/update-holiday.dto';
-import { FilterHoliday } from './dto/query-holiday.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Holiday } from 'src/entities/holiday.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { CalendarService } from 'src/calendar/calendar.service';
+import { FilterDay, FilterHoliday } from './dto/query-holiday.dto';
 
 @Injectable()
 export class HolidayService {
@@ -29,7 +29,6 @@ export class HolidayService {
         .orWhere('holiday.nameLocal like :searchText', { searchText: `%${searchText}%` })
         .orWhere('holiday.description like :searchText', { searchText: `%${searchText}%` })
     }
-
     if (offset) {
       //เลขหน้า
       queryBuilder.skip(offset);
@@ -41,6 +40,57 @@ export class HolidayService {
     queryBuilder.orderBy(order);
     const [data, total] = await queryBuilder.getManyAndCount();
     return { data, total };
+  }
+
+  async findByStartEnd(filterday: FilterDay) {
+    if (filterday.startTime && filterday.endTime) {
+      const startDate = new Date(filterday.startTime)
+      const endDate = new Date(filterday.endTime)
+      const holiday = this.holidayRepository
+        .createQueryBuilder('holiday')
+        .where('holiday.date BETWEEN :startDate AND :endDate', { startDate, endDate })
+      const [data, total] = await holiday.getManyAndCount();
+      const differenceInMilliseconds = endDate.getTime() - startDate.getTime();
+      const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
+
+      // ใช้วนลูปตั้งแต่ startDate ถึง endDate
+      let saturdayCount = 0;
+      let mondayCount = 0;
+      for (let currentDate = startDate; currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) {
+        // ตรวจสอบว่าวันปัจจุบันเป็นวันเสาร์หรือไม่ (0 = วันอาทิตย์, 6 = วันเสาร์)
+        if (currentDate.getDay() === 6) {
+          saturdayCount++;
+        }
+        if (currentDate.getDay() === 0) {
+          mondayCount++;
+        }
+      }
+      let result = differenceInDays - (total + (saturdayCount + mondayCount))
+      if (filterday.startLeaveDayType !== 'full day') {
+        result -= 0.5
+        if (filterday.endLeaveDayType === 'afternoon') {
+          result += 0.5
+        } else if (filterday.endLeaveDayType === 'full day') {
+          result += 1
+        }
+      }
+      if (filterday.startLeaveDayType === 'full day') {
+        if (filterday.endLeaveDayType === "afternoon") {
+          result += 0.5
+        } else if (filterday.endLeaveDayType === "full day") {
+          result += 1
+        }
+      }
+      return { holidays: data, leaveQuantity: result }
+    } else if (filterday.startTime) {
+      if (filterday.startLeaveDayType !== 'full day') {
+        const result = 0.5
+        return { holidays: [], leaveQuantity: result }
+      } else {
+        const result = 1
+        return { holidays: [], leaveQuantity: result }
+      }
+    }
   }
 
   async createManyHolidays(): Promise<any> {

@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserTimeOffService } from './user-time-off.service';
+import { WorkFlowCardService } from './work-flow-card.service';
 
-describe('UserTimeOfService', () => {
-  let service: UserTimeOffService;
+describe('WorkFlowCardService', () => {
+  let service: WorkFlowCardService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserTimeOffService],
+      providers: [WorkFlowCardService],
     }).compile();
 
-    service = module.get<UserTimeOffService>(UserTimeOffService);
+    service = module.get<WorkFlowCardService>(WorkFlowCardService);
   });
 
   it('should be defined', () => {

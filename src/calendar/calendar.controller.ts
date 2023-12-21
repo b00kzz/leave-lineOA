@@ -8,16 +8,16 @@ import { ApiTags } from '@nestjs/swagger';
 export class CalendarController {
     constructor(private readonly CalendarService: CalendarService) { }
 
-    @Patch()
-    async getHolidays(@Body() leaveDate: LeaveDateDto): Promise<any> {
-        const holidays = await this.CalendarService.getHolidays(leaveDate);
-        const leaveDays = await this.CalendarService.differentDay(leaveDate);
-        if (holidays.length !== 0 && leaveDate.endDate) {
-            const total = leaveDays - holidays.length;
-            return { leaveDays: total, holidays };
-        }
-        return { leaveDays: leaveDays, holidays };
-    }
+    // @Patch()
+    // async getHolidays(@Body() leaveDate: LeaveDateDto): Promise<any> {
+    //     const holidays = await this.CalendarService.getHolidays(leaveDate);
+    //     const leaveDays = await this.CalendarService.differentDay(leaveDate);
+    //     if (holidays.length !== 0 && leaveDate.endDate) {
+    //         const total = leaveDays - holidays.length;
+    //         return { leaveDays: total, holidays };
+    //     }
+    //     return { leaveDays: leaveDays, holidays };
+    // }
 
     @Get()
     async findAll(): Promise<any> {

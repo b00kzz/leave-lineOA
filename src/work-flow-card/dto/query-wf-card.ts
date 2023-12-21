@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
-export class FilterHoliday {
+export class FilterWorkFlowCard {
     @ApiProperty({ description: 'Choose among ASC, DESC, asc, or desc', example: "ASC" })
     @IsOptional()
     orderBy?: any;
@@ -21,22 +21,4 @@ export class FilterHoliday {
     @IsNumber()
     @IsOptional()
     page?: number;
-}
-
-export class FilterDay {
-    @ApiProperty({ example: "2023-12-03" })
-    @IsDateString()
-    startTime: string;
-
-    @IsString()
-    startLeaveDayType: string;
-
-    @IsString()
-    @IsOptional()
-    endLeaveDayType?: string;
-
-    @ApiProperty({ example: "2023-12-07" })
-    @IsDateString()
-    @IsOptional()
-    endTime?: string;
 }

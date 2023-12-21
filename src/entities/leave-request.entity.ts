@@ -22,13 +22,13 @@ export class LeaveRequest extends AbstractEntity<LeaveRequest> {
     @Column({ name: "start_leave_day_type", type: 'enum', enum: LEAVE_DAY_TYPE })
     startLeaveDayType: string
 
-    @Column({ name: "end_time" })
-    endTime: Date;
+    @Column({ name: "end_time", nullable: true })
+    endTime?: Date;
 
-    @Column({ name: "end_leave_day_type", type: 'enum', enum: LEAVE_DAY_TYPE })
-    endLeaveDayType: string
+    @Column({ name: "end_leave_day_type", type: 'enum', enum: LEAVE_DAY_TYPE, nullable: true })
+    endLeaveDayType?: string
 
-    @Column({ name: "leave_Duration" })
+    @Column({ name: "leave_Duration", type: 'decimal' })
     leaveDuration: number;
 
     @Column({ name: "leave_reason" })

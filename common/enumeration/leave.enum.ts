@@ -1,7 +1,7 @@
 export enum LEAVE_STATUS {
-    Pending = `pending approval`,
-    Approved = `approved`,
-    Rejected = `rejected`,
+    Pending = `Pending`,
+    Approved = `Approved`,
+    Rejected = `Rejected`,
     Cancelled = `cancelled`,
 }
 

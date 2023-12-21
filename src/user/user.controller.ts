@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,6 +15,7 @@ import { User } from 'src/entities/user.entity';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserFilterDto } from './dto/query-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @Controller('user')

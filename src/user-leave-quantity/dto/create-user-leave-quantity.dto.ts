@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsDecimal, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNumber } from "class-validator";
 
-export class CreateUserTimeOffDto {
+export class CreateUserLeaveQuantityDto {
     @ApiProperty({ type: "number", example: 1 })
     @IsNumber()
     userId: number;

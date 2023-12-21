@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, Decimal128, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { AbstractEntity } from "./abstract.entity/abstract.entity";
 import { ApiNumberProperty } from "common/api-spec/decorator";
+import { AbstractEntity } from "./abstract.entity/abstract.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('user_leave_quantity')
-export class UserTimeOff extends AbstractEntity<UserTimeOff> {
+@Entity()
+export class UserLeaveQuantity extends AbstractEntity<UserLeaveQuantity>{
     @ApiNumberProperty(1)
     @PrimaryGeneratedColumn()
     id: number;

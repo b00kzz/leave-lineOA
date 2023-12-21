@@ -18,10 +18,12 @@ import { UserTeamModule } from './user_team/user_team.module';
 import { ApiSpecService } from 'common/api-spec/api-spec.service';
 import { LineMessageModule } from './line-message/line-message.module';
 import { HolidayModule } from './holiday/holiday.module';
-import { UserTimeOffModule } from './user-time-off/user-time-off.module';
 import { LeaveRequestsModule } from './leave-requests/leave-requests.module';
 import { PositionModule } from './position/position.module';
 import { CalendarModule } from './calendar/calendar.module';
+import { WorkFlowCardModule } from './work-flow-card/work-flow-card.module';
+import { WorkFlowStatusModule } from './work-flow-status/work-flow-status.module';
+import { UserLeaveQuantityModule } from './user-leave-quantity/user-leave-quantity.module';
 
 @Module({
   imports: [
@@ -52,10 +54,12 @@ import { CalendarModule } from './calendar/calendar.module';
     UserTeamModule,
     LineMessageModule,
     HolidayModule,
-    UserTimeOffModule,
     LeaveRequestsModule,
     PositionModule,
     CalendarModule,
+    WorkFlowCardModule,
+    WorkFlowStatusModule,
+    UserLeaveQuantityModule,
   ],
   providers: [AppService, ApiSpecService],
   controllers: [AppController],

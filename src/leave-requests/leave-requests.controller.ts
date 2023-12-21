@@ -1,21 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { LeaveRequestsService } from './leave-requests.service';
 import { CreateLeaveRequestDto } from './dto/create-leave-request.dto';
 import { UpdateLeaveRequestDto } from './dto/update-leave-request.dto';
 import { FilterLeaveReq } from './dto/query-leave-req.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('Leave Requests')
 @Controller('leave')
 export class LeaveRequestsController {
   constructor(private readonly leaveRequestsService: LeaveRequestsService) { }
-
+  @UseGuards(JwtGuard)
   @Post()
   create(@Body() createLeaveRequestDto: CreateLeaveRequestDto) {
-    const newCust = { ...createLeaveRequestDto, status: 'pending approval' };
+    const newCust = { ...createLeaveRequestDto, status: 'Pending' };
     return this.leaveRequestsService.create(newCust);
   }
 
+  @UseGuards(JwtGuard)
   @Patch()
   async findAll(@Body() filter: FilterLeaveReq): Promise<any> {
     try {

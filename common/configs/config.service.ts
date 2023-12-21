@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 class ConfigService {
-  constructor(private readonly env: Record<string, string | undefined>) {}
+  constructor(private readonly env: Record<string, string | undefined>) { }
 
   private getValue(key: string, throwOnMissing = true): string {
     const value = this.env[key];
@@ -12,6 +12,16 @@ class ConfigService {
       throw new Error(`config error - missing env.${key}`);
     }
     return value ?? '';
+  }
+
+  public cors() {
+    return {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    }
   }
 
   public ensureValues(keys: string[]) {

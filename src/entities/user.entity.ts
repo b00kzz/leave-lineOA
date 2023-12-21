@@ -1,4 +1,4 @@
-import { Entity, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AbstractEntity } from 'src/entities/abstract.entity/abstract.entity';
 import { ResultResponse } from 'common/api-spec/type-helper/result-response.helper';
@@ -55,6 +55,7 @@ export class User extends AbstractEntity<User> {
   deletedAt?: Date;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPasword() {
     this.password = await bcrypt.hash(this.password, 10);
   }

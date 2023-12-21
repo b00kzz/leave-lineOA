@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { User } from 'src/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+
+const EXPIRE_TIME = 20 * 1000;
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findOneWithUserName(username);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
+      const { password, firstName, lastName, firstNameLocal, lastNameLocal, middleName, middleNameLocal, createdAt, updatedAt, phone, ...result } = user;
       return result;
     }
     return null;
@@ -29,8 +32,11 @@ export class AuthService {
 
     return {
       ...user,
-      accessToken: this.jwtService.sign(payload),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '20s',
+      }),
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
+      // refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 
@@ -43,7 +49,10 @@ export class AuthService {
     };
 
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '7d',
+      }),
+      expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
     };
   }
 }
